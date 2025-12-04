@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mysql_pe:
+    image: mysql:8.0
+    container_name: mysql_instance_pe
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass1
+      MYSQL_DATABASE: db_appointment_pe
+    ports:
+      - "3307:3306"   # instancia 1 expuesta en el host
+    volumes:
+      - mysql1_data:/var/lib/mysql
+    networks:
+      - mysql-network
+
+  mysql_cl:
+    image: mysql:8.0
+    container_name: mysql_instance_cl
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass2
+      MYSQL_DATABASE: db_appointment_cl
+    ports:
+      - "3308:3306"   # instancia 2 expuesta en el host
+    volumes:
+      - mysql2_data:/var/lib/mysql
+    networks:
+      - mysql-network
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - mysql-network
+    environment:
+      # Valor por defecto (opcional). Puedes iniciar sesión en cualquiera.
+      ADMINER_DEFAULT_SERVER: mysql_pe
+
+volumes:
+  mysql1_data:
+  mysql2_data:
+
+networks:
+  mysql-network:
+    driver: bridge

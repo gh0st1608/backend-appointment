@@ -1,0 +1,193 @@
+service: appointment-backend
+frameworkVersion: '3'
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  environment:
+    DYNAMO_TABLE: AppointmentTable
+    TOPIC_ARN: { Ref: AppointmentTopic }
+    APPOINTMENT_EVENT_BUS: AppointmentBus
+    RDS_HOST: ${env:RDS_HOST}
+    RDS_PORT: ${env:RDS_PORT}
+    RDS_USER: ${env:RDS_USER}
+    RDS_PASSWORD: ${env:RDS_PASSWORD}
+    RDS_DATABASE: ${env:RDS_DATABASE}
+
+
+functions:
+  appointmentApi:
+    handler: dist/infrastructure/lambdas/appointment.handler
+    events:
+      - httpApi:
+          path: /appointments
+          method: post
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:*:*:table/AppointmentTable
+      - Effect: Allow
+        Action:
+          - sns:Publish
+        Resource: '*'
+
+
+  appointmentPeConsumer:
+    handler: dist/infrastructure/lambdas/appointment_pe.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [SqsPEQueue, Arn]
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - sqs:ReceiveMessage
+          - sqs:DeleteMessage
+          - sqs:GetQueueAttributes
+        Resource:
+          - Fn::GetAtt: [SqsPEQueue, Arn]
+      - Effect: Allow
+        Action:
+          - events:PutEvents
+        Resource: arn:aws:events:*:*:event-bus/AppointmentBus
+      - Effect: Allow
+        Action:
+          - rds-db:connect
+        Resource: '*'
+
+
+  appointmentClConsumer:
+    handler: dist/infrastructure/lambdas/appointment_cl.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [SqsCLQueue, Arn]
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - sqs:ReceiveMessage
+          - sqs:DeleteMessage
+          - sqs:GetQueueAttributes
+        Resource:
+          - Fn::GetAtt: [SqsCLQueue, Arn]
+      - Effect: Allow
+        Action:
+          - events:PutEvents
+        Resource: arn:aws:events:*:*:event-bus/AppointmentBus
+      - Effect: Allow
+        Action:
+          - rds-db:connect
+        Resource: '*'
+
+resources:
+  Resources:
+    AppointmentTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: AppointmentTable
+        AttributeDefinitions:
+          - AttributeName: insuredId
+            AttributeType: S
+          - AttributeName: scheduleId
+            AttributeType: N
+        KeySchema:
+          - AttributeName: insuredId
+            KeyType: HASH
+          - AttributeName: scheduleId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+    AppointmentTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: AppointmentTopic
+
+    SqsPEQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: SQS_PE
+
+    SqsCLQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: SQS_CL
+
+    SubPeSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref AppointmentTopic
+        Protocol: sqs
+        Endpoint: !GetAtt SqsPEQueue.Arn
+        FilterPolicy:
+          countryISO:
+            - "PE"
+
+    SubClSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+      TopicArn: !Ref AppointmentTopic
+      Protocol: sqs
+      Endpoint: !GetAtt SqsCLQueue.Arn
+      FilterPolicy:
+        countryISO:
+          - "CL"
+
+    AppointmentBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: AppointmentBus
+
+    AppointmentConfirmationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: AppointmentConfirmationQueue
+
+
+    AppointmentToConfirmRule:
+      Type: AWS::Events::Rule
+      Properties:
+        Name: AppointmentToSQSRule
+      EventBusName: !Ref AppointmentBus
+      EventPattern:
+        source:
+          - "appointment.service"
+        detail-type:
+          - "AppointmentConfirmed"
+      Targets:
+        - Arn: !GetAtt AppointmentConfirmationQueue.Arn
+          Id: ConfirmQueueTarget
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    keepNames: true
+    external:
+      - aws-sdk        # AWS SDK ya viene preinstalado en Lambdas
+    target: node18s
+    platform: node
+    concurrency: 10
+    define:
+      'require.resolve': undefined
+    metafile: true
+    loader:
+      .js: 'js'
+      .json: 'json'
+      .ts: 'ts'
+    tsconfig: './tsconfig.json'
+    packager: 'npm'
+    exclude:
+      - '@nestjs/microservices'
+      - '@nestjs/websockets'
+      - 'class-transformer'
+      - 'class-validator'
+
+package:
+  individually: true
+  patterns:
+    - '!node_modules/aws-sdk/**'
