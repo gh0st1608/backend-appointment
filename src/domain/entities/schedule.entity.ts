@@ -6,7 +6,7 @@ export interface ScheduleRequired {
 }
 
 export interface ScheduleOptional {
-  readonly scheduleId: number;    
+  readonly scheduleId: number;
   readonly createdAt: Date;
   readonly updatedAt: Date | null;
   readonly deletedAt: Date | null;

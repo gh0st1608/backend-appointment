@@ -15,7 +15,8 @@ export class RdsRepository implements IRDSAppointmentRepository {
 
   private getDataSource(countryISO: string): DataSource {
     const ds = this.dataSources[countryISO];
-    if (!ds) throw new Error(`No datasource configured for country ${countryISO}`);
+    if (!ds)
+      throw new Error(`No datasource configured for country ${countryISO}`);
     return ds;
   }
 
@@ -26,7 +27,12 @@ export class RdsRepository implements IRDSAppointmentRepository {
     if (!ds.isInitialized) {
       await ds.initialize();
     }
-    console.log('Connecting to DB:', process.env.RDS_HOST_PE, process.env.RDS_PORT_PE, process.env.RDS_DATABASE_PE);
+    console.log(
+      'Connecting to DB:',
+      process.env.RDS_HOST_PE,
+      process.env.RDS_PORT_PE,
+      process.env.RDS_DATABASE_PE,
+    );
 
     const repo = ds.getRepository(AppointmentEntity);
     const propsAppointment = appointment.properties();

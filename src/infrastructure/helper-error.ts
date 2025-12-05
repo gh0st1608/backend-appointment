@@ -39,7 +39,7 @@ export class HelperError {
           dateTime: new Date().toISOString(),
           title,
           message,
-        }
+        },
       }),
     };
   }

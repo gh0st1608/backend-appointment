@@ -10,4 +10,3 @@ export interface IRDSAppointmentRepository {
 
 export const DynamoAppointmentSymbol = Symbol('IDynamoAppointmentRepository');
 export const RDSAppointmentSymbol = Symbol('IRDSAppointmentRepository');
-

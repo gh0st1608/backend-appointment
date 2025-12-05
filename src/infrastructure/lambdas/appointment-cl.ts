@@ -10,9 +10,8 @@ let app: INestApplicationContext | null = null;
 export const handler: SQSHandler = async (
   event: SQSEvent,
   _context: Context,
-  _callback: Callback
+  _callback: Callback,
 ): Promise<void> => {
-
   if (!app) {
     app = await NestFactory.createApplicationContext(AppointmentModule);
   }

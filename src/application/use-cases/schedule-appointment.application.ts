@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Appointment } from '../../domain/entities/appointment.entity';
-import { DynamoAppointmentSymbol, IDynamoAppointmentRepository } from '../../domain/repository/appointment.repository';
+import {
+  DynamoAppointmentSymbol,
+  IDynamoAppointmentRepository,
+} from '../../domain/repository/appointment.repository';
 import { CreateAppointmentDataDto } from '../dto/request/create-appointment.dto';
 import { Schedule } from '../../domain/entities/schedule.entity';
 import { AppointmentResponse } from '../dto/response/appointment-response';

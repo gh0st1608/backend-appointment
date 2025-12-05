@@ -1,11 +1,17 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config';
 import { AppointmentController } from './infrastructure/controllers/appointment.controller';
 import { DynamoRepository } from './infrastructure/repository/dynamo.repository';
 import { ScheduleAppointmentUseCase } from './application/use-cases/schedule-appointment.application';
-import { DynamoAppointmentSymbol, RDSAppointmentSymbol } from './domain/repository/appointment.repository';
+import {
+  DynamoAppointmentSymbol,
+  RDSAppointmentSymbol,
+} from './domain/repository/appointment.repository';
 import { RdsRepository } from './infrastructure/repository/rds.repository';
-import { EBAppointmentEventPublisherSymbol, SNSAppointmentEventPublisherSymbol } from './domain/repository/event.repository';
+import {
+  EBAppointmentEventPublisherSymbol,
+  SNSAppointmentEventPublisherSymbol,
+} from './domain/repository/event.repository';
 import { SNSAppointmentPublisher } from './infrastructure/repository/sns.repository';
 import { EBAppointmentPublisher } from './infrastructure/repository/eventbridge.repository';
 import { ScheduleAppointmentPEUseCase } from './application/use-cases/schedule-appointment-pe.application';
@@ -15,8 +21,8 @@ import { AppointmentControllerConsumer } from './infrastructure/consumers/appoin
 @Module({
   imports: [
     ConfigModule.forRoot({
-        envFilePath: `${process.env.NODE_ENV || ''}.env`,
-        isGlobal: true,
+      envFilePath: `${process.env.NODE_ENV || ''}.env`,
+      isGlobal: true,
     }),
   ],
   controllers: [AppointmentController],
@@ -40,7 +46,7 @@ import { AppointmentControllerConsumer } from './infrastructure/consumers/appoin
     ScheduleAppointmentUseCase,
     ScheduleAppointmentPEUseCase,
     ScheduleAppointmentCLUseCase,
-    AppointmentControllerConsumer
+    AppointmentControllerConsumer,
   ],
 })
 export class AppointmentModule {}

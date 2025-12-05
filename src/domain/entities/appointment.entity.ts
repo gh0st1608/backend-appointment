@@ -18,14 +18,13 @@ export interface AppointmentOptional {
   readonly deletedAt: Date | null;
 }
 
-export type AppointmentProperties = AppointmentRequired & Partial<AppointmentOptional>;
+export type AppointmentProperties = AppointmentRequired &
+  Partial<AppointmentOptional>;
 
 export type AppointmentPropertiesUpdate = Partial<
   Pick<AppointmentRequired, 'schedule' | 'countryISO'> &
     Pick<AppointmentOptional, 'state' | 'updatedAt'>
 >;
-
-
 
 export class Appointment {
   private appointmentId: string;

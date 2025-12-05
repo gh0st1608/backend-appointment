@@ -9,6 +9,9 @@ export interface IEBAppointmentEventPublisher {
   publishAppointmentConfirmed(event: AppointmentConfirmedEvent): Promise<void>;
 }
 
-export const SNSAppointmentEventPublisherSymbol = Symbol('ISNSAppointmentEventPublisher');
-export const EBAppointmentEventPublisherSymbol = Symbol('IEBAppointmentEventPublisher');
-
+export const SNSAppointmentEventPublisherSymbol = Symbol(
+  'ISNSAppointmentEventPublisher',
+);
+export const EBAppointmentEventPublisherSymbol = Symbol(
+  'IEBAppointmentEventPublisher',
+);

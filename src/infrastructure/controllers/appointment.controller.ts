@@ -1,8 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ScheduleAppointmentUseCase } from '../../application/use-cases/schedule-appointment.application';
 import { CreateAppointmentDataDto } from '../../application/dto/request/create-appointment.dto';
 
