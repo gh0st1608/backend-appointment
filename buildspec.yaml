@@ -19,7 +19,7 @@ phases:
       - echo "Copiando archivos a S3.."
       - aws s3 cp dist/ s3://appointment-backend.solutionserj.com/ --recursive
       - echo "Haciendo público el HTML.."
-      - aws s3api put-object-acl --bucket appointment-backend.solutionserj.com --key appointment-backend.html --acl public-read
+      - aws s3api put-object-acl --bucket appointment-backend.solutionserj.com --key index.html --acl public-read
 
 artifacts:
   files:

@@ -10,7 +10,7 @@
     "scripts": {
         "start": "openapi preview-docs --port 8084 openapi/openapi.yaml",
         "build": "openapi bundle -o dist/appointment-backend.yaml",
-        "build-html": "redoc-cli bundle ./dist/appointment-backend.yaml --output ./dist/appointment-backend.html -t ./docs/index.html",
+        "build-html": "redoc-cli bundle ./dist/appointment-backend.yaml --output ./dist/index.html -t ./docs/index.html",
         "test": "openapi validate"
     },
     "devDependencies": {
