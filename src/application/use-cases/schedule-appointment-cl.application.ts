@@ -15,6 +15,7 @@ import {
   EBAppointmentEventPublisherSymbol,
 } from '../../domain/repository/event.repository';
 import { Schedule } from '../../domain/entities/schedule.entity';
+import { AppointmentPayloadInvalidException } from '../exceptions/appointment-payload-invalid.exception';
 
 @Injectable()
 export class ScheduleAppointmentCLUseCase {
@@ -31,25 +32,23 @@ export class ScheduleAppointmentCLUseCase {
   async execute(payload: AppointmentPayload): Promise<void> {
     try {
       if (!payload) {
-        throw new Error('Payload inválido');
+        throw new AppointmentPayloadInvalidException;
       }
 
       const schedule = Schedule.create({
-        scheduleId: payload.schedule.scheduleId,
-        centerId: payload.schedule.centerId,
-        specialtyId: payload.schedule.specialtyId,
-        medicId: payload.schedule.medicId,
-        date: payload.schedule.date,
+        scheduleId: payload.scheduleId,
+        centerId: payload.centerId,
+        specialtyId: payload.specialtyId,
+        medicId: payload.medicId,
+        date: payload.date,
       });
 
-      // 1️⃣ Crear la entidad desde el factory method
       const appointment = Appointment.create({
         insuredId: payload.insuredId,
         schedule,
         countryISO: payload.countryISO,
       });
 
-      // 2️⃣ Marcar como confirmado
       appointment.confirm();
 
       this.logger.log(
@@ -58,10 +57,8 @@ export class ScheduleAppointmentCLUseCase {
         }`,
       );
 
-      // 3️⃣ Guardar en RDS
       await this.rdsRepo.save(appointment);
 
-      // 4️⃣ Enviar evento tipado
       const event: AppointmentConfirmedEvent = {
         insuredId: appointment.properties().insuredId,
         scheduleId: appointment.properties().schedule.properties().scheduleId,

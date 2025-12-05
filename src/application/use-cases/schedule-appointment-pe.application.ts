@@ -15,6 +15,7 @@ import {
   EBAppointmentEventPublisherSymbol,
 } from '../../domain/repository/event.repository';
 import { Schedule } from '../../domain/entities/schedule.entity';
+import { AppointmentPayloadInvalidException } from '../exceptions/appointment-payload-invalid.exception';
 
 @Injectable()
 export class ScheduleAppointmentPEUseCase {
@@ -31,15 +32,15 @@ export class ScheduleAppointmentPEUseCase {
   async execute(payload: AppointmentPayload): Promise<void> {
     try {
       if (!payload) {
-        throw new Error('Payload inválido');
+        throw new AppointmentPayloadInvalidException;
       }
 
       const schedule = Schedule.create({
-        scheduleId: payload.schedule.scheduleId,
-        centerId: payload.schedule.centerId,
-        specialtyId: payload.schedule.specialtyId,
-        medicId: payload.schedule.medicId,
-        date: payload.schedule.date,
+        scheduleId: payload.scheduleId,
+        centerId: payload.centerId,
+        specialtyId: payload.specialtyId,
+        medicId: payload.medicId,
+        date: payload.date,
       });
 
       // 1️⃣ Crear la entidad desde el factory method
@@ -70,6 +71,7 @@ export class ScheduleAppointmentPEUseCase {
       };
 
       await this.eventPublisher.publishAppointmentConfirmed(event);
+
     } catch (error) {
       throw error;
     }

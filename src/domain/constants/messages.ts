@@ -4,6 +4,7 @@ export enum ServerErrorMessages {
 
 export enum DomainErrorMessages {
   APPOINTMENT_NOT_FOUND = 'Cita no encontrada',
+  APPOINTMENT_PAYLOAD_INVALID= 'Payload Invàlido'
 }
 
 export enum DomainSuccessMessages {

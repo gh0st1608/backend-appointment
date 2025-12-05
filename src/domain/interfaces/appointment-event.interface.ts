@@ -1,15 +1,12 @@
-export interface AppointmentSchedule {
-  scheduleId: number;
-  centerId: number;
-  specialtyId: number;
-  medicId: number;
-  date: string; // ISO string
-}
 
 export interface AppointmentPayload {
   insuredId: string;
   countryISO: 'PE' | 'CL';
-  schedule: AppointmentSchedule;
+  scheduleId: number;
+  centerId: number;
+  specialtyId: number;
+  medicId: number;
+  date: string;
 }
 
 export interface AppointmentCreatedEvent {

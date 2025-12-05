@@ -3,6 +3,7 @@ import { SQSEvent } from 'aws-lambda';
 import { ScheduleAppointmentPEUseCase } from '../../application/use-cases/schedule-appointment-pe.application';
 import { ScheduleAppointmentCLUseCase } from '../../application/use-cases/schedule-appointment-cl.application';
 import { CountryISO } from '../../domain/entities/appointment.entity';
+import { AppointmentPayload } from '../../domain/interfaces/appointment-event.interface';
 
 @Injectable()
 export class AppointmentControllerConsumer {
@@ -14,18 +15,22 @@ export class AppointmentControllerConsumer {
   ) {}
 
   async handle(event: SQSEvent, country: CountryISO): Promise<void> {
-    this.logger.log(`📩 Processing queue for country: ${country}`);
-
     for (const record of event.Records) {
-      const body = JSON.parse(record.body);
+      const rawBody = JSON.parse(record.body);
+
+      // SNS → SQS → Lambda
+      const snsMessage = JSON.parse(rawBody.Message);
+
+      console.log('SNS WRAPPER:', rawBody);
+      console.log('REAL MESSAGE:', snsMessage);
 
       switch (country) {
         case 'PE':
-          await this.scheduleAppointmentPEUseCase.execute(body);
+          await this.scheduleAppointmentPEUseCase.execute(snsMessage);
           break;
 
         case 'CL':
-          await this.scheduleAppointmentCLUseCase.execute(body);
+          await this.scheduleAppointmentCLUseCase.execute(snsMessage);
           break;
 
         default:
