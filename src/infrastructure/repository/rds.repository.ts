@@ -27,12 +27,6 @@ export class RdsRepository implements IRDSAppointmentRepository {
     if (!ds.isInitialized) {
       await ds.initialize();
     }
-    console.log(
-      'Connecting to DB:',
-      process.env.RDS_HOST_PE,
-      process.env.RDS_PORT_PE,
-      process.env.RDS_DATABASE_PE,
-    );
 
     const repo = ds.getRepository(AppointmentEntity);
     const propsAppointment = appointment.properties();

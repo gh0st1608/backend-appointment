@@ -31,7 +31,6 @@ export class EBAppointmentPublisher implements IEBAppointmentEventPublisher {
 
       await this.client.send(command);
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

@@ -28,7 +28,6 @@ export class SNSAppointmentPublisher implements ISNSAppointmentEventPublisher {
         }),
       );
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
