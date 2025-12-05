@@ -1,19 +1,17 @@
 {
     "name": "backend-appointment",
     "version": "1.0.0",
-    "main": "dist/lambda-handlers/appointment.handler.js",
+    "main": "dist/infrastructure/lambdas/appointment.handler.js",
     "author": "Ghost1608",
     "license": "Copyright (c) Solutions SERJ.",
     "scripts": {
         "build:nest": "nest build -p ./tsconfig.build.json",
-        "build": "tsc -p tsconfig.json",
-        "dev": "ts-node -r tsconfig-paths/register src/main.ts",
         "start:dev": "nest start --watch",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "test": "jest",
-        "typeorm:migrate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./ormconfig.ts",
-        "typeorm:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d ./ormconfig.ts"
+        "migration:run:pe": "ts-node ./node_modules/typeorm/cli.js migration:run -d ./src/infrastructure/config/datasource-pe.ts",
+        "migration:run:cl": "ts-node ./node_modules/typeorm/cli.js migration:run -d ./src/infrastructure/config/datasource-cl.ts"
     },
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.382.0",
@@ -40,6 +38,7 @@
         "@types/uuid": "^10.0.0",
         "jest": "^29.6.1",
         "serverless": "^4.27.0",
+        "serverless-esbuild": "^1.56.1",
         "serverless-offline": "^14.4.0",
         "serverless-webpack": "^5.5.0",
         "ts-jest": "^29.1.0",

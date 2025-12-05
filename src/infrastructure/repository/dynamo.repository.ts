@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class DynamoRepository implements IDynamoAppointmentRepository {
   private readonly docClient: DynamoDBDocumentClient;
-  private readonly tableName = process.env.APPOINTMENT ?? 'Appointment';
+  private readonly tableName = process.env.APPOINTMENT_DYNAMODB ?? 'Appointments';
 
   constructor() {
     const client = new DynamoDBClient({

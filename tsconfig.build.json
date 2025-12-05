@@ -1,10 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "include": [
-        "src/**/*.ts",
-        "src/infrastructure/config/ormconfig-pe.ts",
-        "src/infrastructure/config/ormconfig-cl.ts",
-        "migration/**/*.ts"
+        "src/**/*.ts"
     ],
     "exclude": [
         "node_modules",

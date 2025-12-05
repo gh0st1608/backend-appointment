@@ -1,37 +1,65 @@
+org: ghost1608
+app: appointment-backend
 service: appointment-backend
-frameworkVersion: '3'
+
+frameworkVersion: '4'
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs18.x
-  region: us-east-1
-  environment:
-    DYNAMO_TABLE: AppointmentTable
-    TOPIC_ARN: { Ref: AppointmentTopic }
-    APPOINTMENT_EVENT_BUS: AppointmentBus
-    RDS_HOST: ${env:RDS_HOST}
-    RDS_PORT: ${env:RDS_PORT}
-    RDS_USER: ${env:RDS_USER}
-    RDS_PASSWORD: ${env:RDS_PASSWORD}
-    RDS_DATABASE: ${env:RDS_DATABASE}
+  region: ${env:REGION, "us-east-1"}
 
+  environment:
+
+    # AWS region
+    REGION: ${env:REGION, "us-east-1"}
+
+    # DynamoDB (creado por CloudFormation)
+    APPOINTMENT_DYNAMODB: appointment-table-${sls:stage}
+
+    # EventBridge Bus Name (viene del .env o SSM)
+    APPOINTMENT_EVENT_BUS: ${env:APPOINTMENT_EVENT_BUS, ssm:/appointment-backend/eventbus/name}
+
+    # SNS Topic ARN
+    APPOINTMENT_CREATED_TOPIC_ARN: 
+      Ref: AppointmentCreatedTopic
+
+    # RDS PE
+    RDS_HOST_PE: ${env:RDS_HOST_PE, ssm:/appointment-backend/rds/host_pe}
+    RDS_PORT_PE: ${env:RDS_PORT_PE, ssm:/appointment-backend/rds/port_pe}
+    RDS_USER_PE: ${env:RDS_USER_PE, ssm:/appointment-backend/rds/user_pe}
+    RDS_PASSWORD_PE: ${env:RDS_PASSWORD_PE, ssm:/appointment-backend/rds/password_pe~true}
+    RDS_DATABASE_PE: ${env:RDS_DATABASE_PE, ssm:/appointment-backend/rds/database_pe}
+
+    # RDS CL
+    RDS_HOST_CL: ${env:RDS_HOST_CL, ssm:/appointment-backend/rds/host_cl}
+    RDS_PORT_CL: ${env:RDS_PORT_CL, ssm:/appointment-backend/rds/port_cl}
+    RDS_USER_CL: ${env:RDS_USER_CL, ssm:/appointment-backend/rds/user_cl}
+    RDS_PASSWORD_CL: ${env:RDS_PASSWORD_CL, ssm:/appointment-backend/rds/password_cl~true}
+    RDS_DATABASE_CL: ${env:RDS_DATABASE_CL, ssm:/appointment-backend/rds/database_cl}
 
 functions:
+
   appointmentApi:
     handler: dist/infrastructure/lambdas/appointment.handler
     events:
       - httpApi:
           path: /appointments
           method: post
+
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:*:*:table/AppointmentTable
+        Resource:
+          Fn::GetAtt: [AppointmentTable, Arn]
+
       - Effect: Allow
         Action:
           - sns:Publish
-        Resource: '*'
-
+        Resource:
+          Ref: AppointmentCreatedTopic
 
   appointmentPeConsumer:
     handler: dist/infrastructure/lambdas/appointment_pe.handler
@@ -39,6 +67,7 @@ functions:
       - sqs:
           arn:
             Fn::GetAtt: [SqsPEQueue, Arn]
+
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -46,16 +75,18 @@ functions:
           - sqs:DeleteMessage
           - sqs:GetQueueAttributes
         Resource:
-          - Fn::GetAtt: [SqsPEQueue, Arn]
+          Fn::GetAtt: [SqsPEQueue, Arn]
+
       - Effect: Allow
         Action:
           - events:PutEvents
-        Resource: arn:aws:events:*:*:event-bus/AppointmentBus
+        Resource:
+          arn:aws:events:${env:REGION}:*:event-bus/${env:APPOINTMENT_EVENT_BUS}
+
       - Effect: Allow
         Action:
           - rds-db:connect
-        Resource: '*'
-
+        Resource: "*"
 
   appointmentClConsumer:
     handler: dist/infrastructure/lambdas/appointment_cl.handler
@@ -63,6 +94,7 @@ functions:
       - sqs:
           arn:
             Fn::GetAtt: [SqsCLQueue, Arn]
+
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -70,22 +102,27 @@ functions:
           - sqs:DeleteMessage
           - sqs:GetQueueAttributes
         Resource:
-          - Fn::GetAtt: [SqsCLQueue, Arn]
+          Fn::GetAtt: [SqsCLQueue, Arn]
+
       - Effect: Allow
         Action:
           - events:PutEvents
-        Resource: arn:aws:events:*:*:event-bus/AppointmentBus
+        Resource:
+          arn:aws:events:${env:REGION}:*:event-bus/${env:APPOINTMENT_EVENT_BUS}
+
       - Effect: Allow
         Action:
           - rds-db:connect
-        Resource: '*'
+        Resource: "*"
+
 
 resources:
   Resources:
+
     AppointmentTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: AppointmentTable
+        TableName: appointment-table-${sls:stage}
         AttributeDefinitions:
           - AttributeName: insuredId
             AttributeType: S
@@ -98,25 +135,25 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
 
-    AppointmentTopic:
+    AppointmentCreatedTopic:
       Type: AWS::SNS::Topic
       Properties:
-        TopicName: AppointmentTopic
+        TopicName: appointment-created-topic-${sls:stage}
 
     SqsPEQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: SQS_PE
+        QueueName: sqs-pe-${sls:stage}
 
     SqsCLQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: SQS_CL
+        QueueName: sqs-cl-${sls:stage}
 
     SubPeSubscription:
       Type: AWS::SNS::Subscription
       Properties:
-        TopicArn: !Ref AppointmentTopic
+        TopicArn: { Ref: AppointmentCreatedTopic }
         Protocol: sqs
         Endpoint: !GetAtt SqsPEQueue.Arn
         FilterPolicy:
@@ -126,66 +163,40 @@ resources:
     SubClSubscription:
       Type: AWS::SNS::Subscription
       Properties:
-      TopicArn: !Ref AppointmentTopic
-      Protocol: sqs
-      Endpoint: !GetAtt SqsCLQueue.Arn
-      FilterPolicy:
-        countryISO:
-          - "CL"
+        TopicArn: { Ref: AppointmentCreatedTopic }
+        Protocol: sqs
+        Endpoint: !GetAtt SqsCLQueue.Arn
+        FilterPolicy:
+          countryISO:
+            - "CL"
 
     AppointmentBus:
       Type: AWS::Events::EventBus
       Properties:
-        Name: AppointmentBus
+        Name: ${env:APPOINTMENT_EVENT_BUS}
 
     AppointmentConfirmationQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: AppointmentConfirmationQueue
-
+        QueueName: appointment-confirmation-queue-${sls:stage}
 
     AppointmentToConfirmRule:
       Type: AWS::Events::Rule
       Properties:
-        Name: AppointmentToSQSRule
-      EventBusName: !Ref AppointmentBus
-      EventPattern:
-        source:
-          - "appointment.service"
-        detail-type:
-          - "AppointmentConfirmed"
-      Targets:
-        - Arn: !GetAtt AppointmentConfirmationQueue.Arn
-          Id: ConfirmQueueTarget
-plugins:
-  - serverless-esbuild
-  - serverless-offline
+        Name: appointment-confirm-rule-${sls:stage}
+        EventBusName: !Ref AppointmentBus
+        EventPattern:
+          source:
+            - "appointment.service"
+          detail-type:
+            - "AppointmentConfirmed"
+        Targets:
+          - Arn: !GetAtt AppointmentConfirmationQueue.Arn
+            Id: ConfirmQueueTarget
 
-custom:
-  esbuild:
-    bundle: true
-    minify: false
-    sourcemap: true
-    keepNames: true
-    external:
-      - aws-sdk        # AWS SDK ya viene preinstalado en Lambdas
-    target: node18s
-    platform: node
-    concurrency: 10
-    define:
-      'require.resolve': undefined
-    metafile: true
-    loader:
-      .js: 'js'
-      .json: 'json'
-      .ts: 'ts'
-    tsconfig: './tsconfig.json'
-    packager: 'npm'
-    exclude:
-      - '@nestjs/microservices'
-      - '@nestjs/websockets'
-      - 'class-transformer'
-      - 'class-validator'
+
+plugins:
+  - serverless-offline
 
 package:
   individually: true
