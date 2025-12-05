@@ -64,6 +64,7 @@ export class ScheduleAppointmentPEUseCase {
 
       // 4️⃣ Enviar evento tipado
       const event: AppointmentConfirmedEvent = {
+        appointmentId: appointment.properties().appointmentId,
         insuredId: appointment.properties().insuredId,
         scheduleId: appointment.properties().schedule.properties().scheduleId,
         countryISO: appointment.properties().countryISO,

@@ -29,8 +29,15 @@ export class EBAppointmentPublisher implements IEBAppointmentEventPublisher {
         ],
       });
 
-      await this.client.send(command);
+      const response = await this.client.send(command);
+
+      console.log('EventBridge response:', JSON.stringify(response, null, 2));
+
+      if (response.FailedEntryCount && response.FailedEntryCount > 0) {
+        console.error('EventBridge failed entries:', response.Entries);
+      }
     } catch (error) {
+      console.error('Error enviando evento a EventBridge:', error);
       throw error;
     }
   }

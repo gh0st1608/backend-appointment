@@ -16,7 +16,10 @@ import { SNSAppointmentPublisher } from './infrastructure/repository/sns.reposit
 import { EBAppointmentPublisher } from './infrastructure/repository/eventbridge.repository';
 import { ScheduleAppointmentPEUseCase } from './application/use-cases/schedule-appointment-pe.application';
 import { ScheduleAppointmentCLUseCase } from './application/use-cases/schedule-appointment-cl.application';
-import { AppointmentControllerConsumer } from './infrastructure/consumers/appointment.consumer';
+import { AppointmentPendingControllerConsumer } from './infrastructure/consumers/appointment-pending.consumer';
+import { AppointmentConfirmationControllerConsumer } from './infrastructure/consumers/appointment-confirmation.consumer';
+import { UpdateStatusAppointmentUseCase } from './application/use-cases/update-appointment.application';
+import { GetAppointmentByIdUseCase } from './application/use-cases/get-appointment.application';
 
 @Module({
   imports: [
@@ -46,7 +49,10 @@ import { AppointmentControllerConsumer } from './infrastructure/consumers/appoin
     ScheduleAppointmentUseCase,
     ScheduleAppointmentPEUseCase,
     ScheduleAppointmentCLUseCase,
-    AppointmentControllerConsumer,
+    UpdateStatusAppointmentUseCase,
+    GetAppointmentByIdUseCase,
+    AppointmentPendingControllerConsumer,
+    AppointmentConfirmationControllerConsumer
   ],
 })
 export class AppointmentModule {}

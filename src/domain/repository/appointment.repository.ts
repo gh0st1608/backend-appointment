@@ -2,6 +2,7 @@ import { Appointment } from '../entities/appointment.entity';
 
 export interface IDynamoAppointmentRepository {
   save(appointment: Appointment): Promise<string>;
+  findOne(id: string): Promise<Appointment>;
 }
 
 export interface IRDSAppointmentRepository {

@@ -18,6 +18,7 @@ export interface AppointmentCreatedEvent {
 }
 
 export interface AppointmentConfirmedEvent {
+  appointmentId: string;
   insuredId: string;
   scheduleId: number;
   countryISO: 'PE' | 'CL';

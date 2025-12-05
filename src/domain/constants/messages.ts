@@ -11,4 +11,5 @@ export enum DomainSuccessMessages {
   GET_APPOINTMENT_SUCESS = 'Cita obtenido con éxito',
   CREATE_APPOINTMENT_SUCCESS = 'Cita creado con éxito',
   PENDING_APPOINTMENT_SUCCESS = 'Agendamiento en proceso con éxito',
+  COMPLETED_APPOINTMENT_SUCCESS = 'Agendamiento completado con èxito'
 }

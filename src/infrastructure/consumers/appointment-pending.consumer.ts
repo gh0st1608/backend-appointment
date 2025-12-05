@@ -3,11 +3,10 @@ import { SQSEvent } from 'aws-lambda';
 import { ScheduleAppointmentPEUseCase } from '../../application/use-cases/schedule-appointment-pe.application';
 import { ScheduleAppointmentCLUseCase } from '../../application/use-cases/schedule-appointment-cl.application';
 import { CountryISO } from '../../domain/entities/appointment.entity';
-import { AppointmentPayload } from '../../domain/interfaces/appointment-event.interface';
 
 @Injectable()
-export class AppointmentControllerConsumer {
-  private readonly logger = new Logger(AppointmentControllerConsumer.name);
+export class AppointmentPendingControllerConsumer {
+  private readonly logger = new Logger(AppointmentPendingControllerConsumer.name);
 
   constructor(
     private readonly scheduleAppointmentPEUseCase: ScheduleAppointmentPEUseCase,

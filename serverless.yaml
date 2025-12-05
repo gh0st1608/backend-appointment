@@ -39,11 +39,14 @@ provider:
 functions:
 
   appointmentApi:
-    handler: dist/infrastructure/lambdas/appointment.handler
+    handler: dist/infrastructure/lambdas/appointment-api.handler
     events:
       - httpApi:
           path: /appointments
           method: post
+      - httpApi:
+          path: /appointments/{id}
+          method: get
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -57,7 +60,7 @@ functions:
           Ref: AppointmentCreatedTopic
 
   appointmentPeConsumer:
-    handler: dist/infrastructure/lambdas/appointment-pe.handler
+    handler: dist/infrastructure/lambdas/appointment-consumer-pe.handler
     events:
       - sqs:
           arn:
@@ -81,7 +84,7 @@ functions:
         Resource: "*"
 
   appointmentClConsumer:
-    handler: dist/infrastructure/lambdas/appointment-cl.handler
+    handler: dist/infrastructure/lambdas/appointment-consumer-cl.handler
     events:
       - sqs:
           arn:
@@ -104,6 +107,18 @@ functions:
           - rds-db:connect
         Resource: "*"
 
+  appointmentUpdConsumer:
+    handler: dist/infrastructure/lambdas/appointment-update.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [AppointmentConfirmationQueue, Arn]
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          Fn::GetAtt: [AppointmentTable, Arn]
 resources:
   Resources:
 
@@ -112,15 +127,11 @@ resources:
       Properties:
         TableName: appointment-table-${sls:stage}
         AttributeDefinitions:
-          - AttributeName: insuredId
+          - AttributeName: appointmentId
             AttributeType: S
-          - AttributeName: scheduleId
-            AttributeType: N
         KeySchema:
-          - AttributeName: insuredId
+          - AttributeName: appointmentId
             KeyType: HASH
-          - AttributeName: scheduleId
-            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
 
     AppointmentCreatedTopic:
