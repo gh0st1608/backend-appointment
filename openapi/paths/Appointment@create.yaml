@@ -1,0 +1,36 @@
+parameters:
+  - $ref: ../components/parameters/Channel.yaml
+  - $ref: ../components/parameters/ApiKey.yaml
+
+post:
+  summary: Create Appointment
+  operationId: createAppointment
+  description: >
+    📦 Procesos: Creación de cita con identificador único
+  
+  
+    🔧 Funcionalidad: Crear datos de cita
+  
+      
+    🚀 Objetivo: Crear cita
+  
+  
+    📌 Comentarios: 
+
+  tags:
+    - Appointments
+
+  requestBody:
+    $ref: ../components/requestBodies/CreateAppointmentRequest.yaml
+
+  responses:
+    '200':
+      $ref: ../components/responses/CreateAppointmentResponse.yaml
+    '400':
+      $ref: ../components/statusCodes/BadRequestResponse.yaml
+    '404':
+      $ref: ../components/statusCodes/NotFoundResponse.yaml
+    '500':
+      $ref: ../components/statusCodes/InternalServerErrorResponse.yaml
+  security:
+    - api_key: []

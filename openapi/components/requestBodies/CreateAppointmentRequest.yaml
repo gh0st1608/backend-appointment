@@ -1,0 +1,19 @@
+description: Entidad para crear un producto
+required: true
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/model_request/CreateAppointmentReq.yaml
+    examples:
+      Caso-Prueba-01:
+        summary: Caso Prueba 01
+        value:
+          Data:
+            Appointment:
+              insuredId: '12345'
+              scheduleId: 10
+              centerId: 5
+              specialtyId: 2
+              medicId: 7
+              date: '2025-12-04T14:30:00Z'
+              countryISO: PE

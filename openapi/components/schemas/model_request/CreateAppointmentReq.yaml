@@ -1,0 +1,52 @@
+type: object
+description: Entidad permite crear una cita
+properties:
+  Data:
+    type: object
+    description: Entidad que permite crear una cita médica
+    properties:
+      Appointment:
+        type: object
+        description: Datos de la cita a crear
+        required:
+          - insuredId
+          - scheduleId
+          - countryISO
+        properties:
+          insuredId:
+            type: string
+            description: Identificador del asegurado, exactamente 5 dígitos
+            pattern: '^[0-9]{5}$'
+            example: '12345'
+          scheduleId:
+            type: integer
+            description: ID del horario asignado
+            example: 10
+          centerId:
+            type: integer
+            description: ID del centro (opcional)
+            example: 5
+          specialtyId:
+            type: integer
+            description: ID de la especialidad (opcional)
+            example: 2
+          medicId:
+            type: integer
+            description: ID del médico (opcional)
+            example: 7
+          date:
+            type: string
+            format: date-time
+            description: Fecha y hora de la cita (opcional)
+            example: '2025-12-04T14:30:00Z'
+          countryISO:
+            type: string
+            enum:
+              - PE
+              - CL
+            description: Código ISO del país
+            example: PE
+
+
+
+          

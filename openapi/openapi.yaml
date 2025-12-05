@@ -1,0 +1,39 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: API de Cita
+  description: >
+    API de Cita, donde se define los alcances recursos.
+      Recuros:
+
+        - Appointments
+
+  contact:
+    name: Erick Galindo Aguilar
+    email: erickmga123@gmail.com
+    url: 'https://storage.googleapis.com/appointment-backend.solutionserj.com/foodstore-dev.html'
+    x-role: API Designer
+  x-catalog:
+    x-id-proxy: api-appointment
+    x-id-product: backend-dev-appointment
+    x-id-catalog: api-appointment
+servers:
+  - url: 'https://ic0zx2pnw2.execute-api.us-east-1.amazonaws.com/'
+    description: Servidor de ambiente Desarrollo
+
+tags:
+  - name: Appointments
+    description: >
+      Agrupa los servicios de gestión sobre el recurso de: Appointments
+
+paths: 
+  '/appointments':
+    $ref: 'paths/Appointment@create.yaml'
+
+components:
+  securitySchemes:
+    api_key:
+      description: Código único del Cliente.
+      type: "apiKey"
+      name: "x-api-key"
+      in: "header"

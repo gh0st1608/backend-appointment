@@ -1,0 +1,10 @@
+name: channel
+in: header
+description: Canal de la aplicación.
+required: true
+schema:
+  type: string
+  enum: [MOBILE,WEB]
+  minLength: 3
+  maxLength: 20
+  example: WEB
