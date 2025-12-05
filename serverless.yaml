@@ -51,6 +51,8 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
         Resource:
           Fn::GetAtt: [AppointmentTable, Arn]
       - Effect: Allow

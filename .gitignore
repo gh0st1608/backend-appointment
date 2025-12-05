@@ -4,3 +4,6 @@ node_modules/
 dist/
 migration/
 .serverless/
+ngrok.yml
+docker-compose.yaml
+docker-compose.dev.yaml

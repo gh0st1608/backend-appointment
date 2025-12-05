@@ -42,6 +42,7 @@ Los eventos se publican en **SNS** y **EventBridge**, y son consumidos por colas
 ## 🐳 Pruebas en local con bases de datos
 
 Para correr pruebas locales de RDS (MySQL/Postgres) y DynamoDB, se puede usar **Docker Compose**.
+Si desea exponerlo a internet para pruebas con lambas desplegados en aws, puede usar ngrok
 
 ### Ejemplo `docker-compose.yml` para RDS:
 
@@ -85,7 +86,8 @@ volumes:
 
 ## Generar Documentacion
 1. Ubicarse en la raiz y ejecutar `git checkout design`
-2. Ejecutar `npm run start` para visualizar el link de la documentación
+2. Ejecutar primero `npm run install` y luego `npm run start` para visualizar el link de la documentación
+3. Ingresar al link `http://127.0.0.1:8084`
 
 ## Pruebas Unitarias
 1. Ubicarse en la raiz y ejecutar `npm run test`
