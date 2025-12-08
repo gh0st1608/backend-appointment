@@ -12,55 +12,66 @@ El sistema sigue una **arquitectura hexagonal** con separación de capas:
 
 Los eventos se publican en **SNS** y **EventBridge**, y son consumidos por colas **SQS** para cada país (`PE`, `CL`).
 
-## Flujo sistema
+## Diagrama Flujo Evento
 
-Flujo completo del sistema
 API Gateway
-↓
+        ↓
 appointmentApi (Lambda)
-↓ SNS: appointment-created-topic
+        ↓
+SNS: appointment-created-topic
 ────────────────────────────────────────────
 countryISO = PE → SqsPEQueue → appointmentPeConsumer
 countryISO = CL → SqsCLQueue → appointmentClConsumer
 ────────────────────────────────────────────
-↓ EventBridge (appointment-bus)
-↓
+        ↓
+EventBridge (appointment-bus)
+        ↓
 appointment-confirmation-queue (SQS)
-↓
+        ↓
 appointmentConfirmationConsumer (Lambda)
-↓
+        ↓
 Actualiza DynamoDB a estado “completed”
 
-🧱 Componentes principales
 
-1. appointmentApi (Lambda + API Gateway)
+## Componentes principales
+ 
+  ### appointmentApi (Lambda + API Gateway)
 
-Función que recibe solicitudes HTTP:
+  1. Función que recibe solicitudes HTTP:
 
-Crea un appointment en DynamoDB
+  2. Crea un appointment en DynamoDB.
 
-Publica un evento en SNS (AppointmentCreated)
+  3. Publica un evento en SNS (AppointmentCreated).
 
-2. appointmentPeConsumer (Lambda)
 
-Consume SQS PE → persiste información en la base RDS-PE
-y envía evento a EventBridge (AppointmentConfirmed).
+  ### appointmentPeConsumer (Lambda)
 
-3. appointmentClConsumer (Lambda)
+  1. Consume mensajes desde SQS PE.
 
-Consume SQS CL → persiste información en la base RDS-CL
-y envía evento a EventBridge.
+  2. Persiste información en la base RDS-PE.
 
-4. appointmentConfirmationConsumer (Lambda)
+  3. Envía un evento a EventBridge (AppointmentConfirmed).
 
-Este lambda escucha un SQS que es target de EventBridge.
-Su objetivo:
 
-Leer evento AppointmentConfirmed
+  ### appointmentClConsumer (Lambda)
 
-Buscar el appointment en DynamoDB
+  1. Consume mensajes desde SQS CL.
 
-Actualizar su estado a completed
+  2. Persiste información en la base RDS-CL.
+
+  3. Envía un evento a EventBridge.
+
+
+  ### appointmentConfirmationConsumer (Lambda)
+
+  1. Este Lambda escucha un SQS que es target de EventBridge.
+
+  2. Leer el evento AppointmentConfirmed.
+
+  3. Buscar el appointment en DynamoDB.
+
+  4. Actualizar su estado a completed.
+  
 
 > **Requerimientos**:
 
