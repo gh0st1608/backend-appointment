@@ -4,7 +4,9 @@ import { UpdateStatusAppointmentUseCase } from '../../application/use-cases/upda
 
 @Injectable()
 export class AppointmentConfirmationControllerConsumer {
-  private readonly logger = new Logger(AppointmentConfirmationControllerConsumer.name);
+  private readonly logger = new Logger(
+    AppointmentConfirmationControllerConsumer.name,
+  );
 
   constructor(
     private readonly updateStatusAppointmentUseCase: UpdateStatusAppointmentUseCase,
@@ -16,7 +18,7 @@ export class AppointmentConfirmationControllerConsumer {
         this.logger.log(`Processing SQS record: ${record.messageId}`);
 
         const rawBody = JSON.parse(record.body);
-        const detail = rawBody.detail; 
+        const detail = rawBody.detail;
 
         this.logger.log(`Event detail: ${JSON.stringify(detail)}`);
 
@@ -28,7 +30,9 @@ export class AppointmentConfirmationControllerConsumer {
           state: detail.state,
         });
 
-        this.logger.log(`✔ Updated appointment for insuredId=${detail.insuredId}`);
+        this.logger.log(
+          `✔ Updated appointment for insuredId=${detail.insuredId}`,
+        );
       } catch (err) {
         this.logger.error(`❌ Error processing record`, err);
         throw err;

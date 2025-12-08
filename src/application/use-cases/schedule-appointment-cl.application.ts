@@ -78,6 +78,7 @@ export class ScheduleAppointmentCLUseCase {
         state: 'confirmed',
       };
 
+      this.logger.log(`evento de cita confirmada: ${JSON.stringify(event)}`)
       await this.eventPublisher.publishAppointmentConfirmed(event);
     } catch (error) {
       throw error;

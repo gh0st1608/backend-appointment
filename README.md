@@ -112,6 +112,9 @@ networks:
     driver: bridge
 
 ```
+### Actualizar .env para pruebas locales:
+  1. Actualizar credenciales de las dos instancias de bd de prueba, entrando al link http://localhost:4040/status
+  2. Actualizar el nombre de APPOINTMENT_TABLE, APPOINTMENT_EVENT_BUS, APPOINTMENT_CREATED_TOPIC_ARN segun la infraestructra creada por serverless.yaml
 
 ### Ejecutar migrations para Perú (PE) y Chile (CL):
 
