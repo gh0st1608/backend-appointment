@@ -54,14 +54,14 @@ export class ScheduleAppointmentPEUseCase {
         date: payload.date,
       });
 
-      // 1️⃣ Crear la entidad desde el factory method
+
       const appointment = Appointment.create({
         insuredId: payload.insuredId,
         schedule,
         countryISO: payload.countryISO,
       });
 
-      // 2️⃣ Marcar como confirmado
+
       appointment.confirm();
 
       this.logger.log(
@@ -70,10 +70,10 @@ export class ScheduleAppointmentPEUseCase {
         }`,
       );
 
-      // 3️⃣ Guardar en RDS
+
       await this.rdsRepo.save(appointment);
 
-      // 4️⃣ Enviar evento tipado
+
       const event: AppointmentConfirmedEvent = {
         appointmentId: payload.appointmentId,
         insuredId: appointment.properties().insuredId,

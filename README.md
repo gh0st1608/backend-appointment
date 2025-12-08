@@ -48,30 +48,68 @@ Si desea exponerlo a internet para pruebas con lambas desplegados en aws, puede 
 
 ```yaml
 version: '3.8'
+
 services:
   db-pe:
     image: mysql:8
+    container_name: db-pe
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: appointmentsdb
-    ports:
-      - "3307:3306"
     volumes:
       - db-pe-data:/var/lib/mysql
+    networks:
+      - mysql-network
+    ports:
+      - "3307:3306"
 
   db-cl:
     image: mysql:8
+    container_name: db-cl
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: appointmentsdb
-    ports:
-      - "3308:3306"
     volumes:
       - db-cl-data:/var/lib/mysql
+    networks:
+      - mysql-network
+    ports:
+      - "3308:3306"
+
+  ngrok:
+    image: ngrok/ngrok
+    container_name: ngrok
+    depends_on:
+      - db-pe
+      - db-cl
+    command: ["start", "--config", "/etc/ngrok.yml", "--all"]
+    environment:
+      NGROK_AUTHTOKEN: "1WJTZKeFhe9jQq4zvhq08PPZy3Z_6v7QP5LyA6jBQ7t2A77VF"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    ports:
+      - "4040:4040"
+    networks:
+      - mysql-network
+  
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - mysql-network
+    environment:
+      ADMINER_DEFAULT_SERVER: db-pe
 
 volumes:
   db-pe-data:
   db-cl-data:
+
+networks:
+  mysql-network:
+    driver: bridge
 
 ```
 
@@ -79,6 +117,11 @@ volumes:
 
   - npm run migration:run:pe
   - npm run migration:run:cl
+
+
+### Generar los archivos de build:
+  - npm run build:nest
+
 
 ### Despliegue de infrastructura con serverless framework:
   - serverless deploy --stage dev
