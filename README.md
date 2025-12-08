@@ -71,7 +71,8 @@ Actualiza DynamoDB a estado “completed”
   3. Buscar el appointment en DynamoDB.
 
   4. Actualizar su estado a completed.
-  
+
+---
 
 > **Requerimientos**:
 
