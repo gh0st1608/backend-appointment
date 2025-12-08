@@ -1,34 +1,48 @@
 version: '3.8'
 
 services:
-  mysql_pe:
-    image: mysql:8.0
-    container_name: mysql_instance_pe
-    restart: unless-stopped
+  db-pe:
+    image: mysql:8
+    container_name: db-pe
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass1
-      MYSQL_DATABASE: db_appointment_pe
-    ports:
-      - "3307:3306"   # instancia 1 expuesta en el host
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: appointmentsdb
     volumes:
-      - mysql_pe_data:/var/lib/mysql
+      - db-pe-data:/var/lib/mysql
     networks:
       - mysql-network
-
-  mysql_cl:
-    image: mysql:8.0
-    container_name: mysql_instance_cl
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpass2
-      MYSQL_DATABASE: db_appointment_cl
     ports:
-      - "3308:3306"   # instancia 2 expuesta en el host
+      - "3307:3306"
+
+  db-cl:
+    image: mysql:8
+    container_name: db-cl
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: appointmentsdb
     volumes:
-      - mysql_cl_data:/var/lib/mysql
+      - db-cl-data:/var/lib/mysql
     networks:
       - mysql-network
+    ports:
+      - "3308:3306"
 
+  ngrok:
+    image: ngrok/ngrok
+    container_name: ngrok
+    depends_on:
+      - db-pe
+      - db-cl
+    command: ["start", "--config", "/etc/ngrok.yml", "--all"]
+    environment:
+      NGROK_AUTHTOKEN: "1WJTZKeFhe9jQq4zvhq08PPZy3Z_6v7QP5LyA6jBQ7t2A77VF"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    ports:
+      - "4040:4040"
+    networks:
+      - mysql-network
+  
   adminer:
     image: adminer
     container_name: adminer
@@ -38,12 +52,11 @@ services:
     networks:
       - mysql-network
     environment:
-      # Valor por defecto (opcional). Puedes iniciar sesión en cualquiera.
-      ADMINER_DEFAULT_SERVER: mysql_pe
+      ADMINER_DEFAULT_SERVER: db-pe
 
 volumes:
-  mysql_pe_data:
-  mysql_cl_data:
+  db-pe-data:
+  db-cl-data:
 
 networks:
   mysql-network:

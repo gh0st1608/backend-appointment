@@ -1,0 +1,10 @@
+version: "2"
+
+tunnels:
+  db_pe:
+    proto: tcp
+    addr: db-pe:3306
+
+  db_cl:
+    proto: tcp
+    addr: db-cl:3306
