@@ -1,4 +1,3 @@
-// src/bootstrap-app.ts
 import {
   INestApplication,
   ValidationPipe,

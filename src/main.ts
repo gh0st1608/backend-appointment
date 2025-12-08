@@ -1,4 +1,3 @@
-// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppointmentModule } from './appointment.module';
 import { setupApp } from './setup';

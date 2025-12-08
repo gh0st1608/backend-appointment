@@ -1,5 +1,6 @@
 
 export interface AppointmentPayload {
+  appointmentId: string;
   insuredId: string;
   countryISO: 'PE' | 'CL';
   scheduleId: number;

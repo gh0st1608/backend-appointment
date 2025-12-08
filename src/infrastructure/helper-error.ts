@@ -26,7 +26,7 @@ export class HelperError {
       code = exception.statusCode;
       message = exception.message;
       title = exception.title;
-      status = 400; // Puedes mapearlo según el `statusCode` si deseas
+      status = 400;
       statusText = 'BAD_REQUEST';
     }
 

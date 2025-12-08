@@ -16,11 +16,9 @@ export class AppointmentConfirmationControllerConsumer {
         this.logger.log(`Processing SQS record: ${record.messageId}`);
 
         const rawBody = JSON.parse(record.body);
+        const detail = rawBody.detail; 
 
-        // EventBridge → SQS → Lambda
-        const detail = JSON.parse(rawBody.detail);
-
-        this.logger.debug(`EventBridge detail`, detail);
+        this.logger.log(`Event detail: ${JSON.stringify(detail)}`);
 
         await this.updateStatusAppointmentUseCase.execute({
           appointmentId: detail.appointmentId,

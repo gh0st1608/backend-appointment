@@ -22,17 +22,14 @@ export class UpdateStatusAppointmentUseCase {
     try {
       const { appointmentId } = payload;
 
-      // 1. Buscar la cita en Dynamo
       const appointment = await this.dynamoRepo.findOne(appointmentId);
 
       if (!appointment) {
-        throw new AppointmentNotFoundException
+        throw new AppointmentNotFoundException()
       }
 
-      // 2. Actualizar estado
       appointment.confirm();
 
-      // 3. Guardar cambios
       await this.dynamoRepo.save(appointment);
 
       return {

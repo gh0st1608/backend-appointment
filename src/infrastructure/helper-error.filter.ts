@@ -9,9 +9,9 @@ export class HttpErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     const formatted = await HelperError.response(exception);
-    const status = formatted.getStatus(); // es un número
-    const body = formatted.getResponse(); // es el objeto que quieres devolver
+    const status = formatted.getStatus();
+    const body = formatted.getResponse();
 
-    response.status(status).json(body); // ✅ correcto
+    response.status(status).json(body);
   }
 }

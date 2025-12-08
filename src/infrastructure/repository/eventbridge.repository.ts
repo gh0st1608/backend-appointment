@@ -28,7 +28,7 @@ export class EBAppointmentPublisher implements IEBAppointmentEventPublisher {
           },
         ],
       });
-      console.log('entro al eb')
+
       const response = await this.client.send(command);
 
       console.log('EventBridge response:', JSON.stringify(response, null, 2));

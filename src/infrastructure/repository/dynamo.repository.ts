@@ -70,7 +70,6 @@ export class DynamoRepository implements IDynamoAppointmentRepository {
         date: appointmentData.date,
       });
 
-      // reconstruir Appointment
       const appointment = new Appointment({
         appointmentId: appointmentData.appointmentId,
         insuredId: appointmentData.insuredId,

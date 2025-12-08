@@ -64,14 +64,14 @@ export class ScheduleAppointmentCLUseCase {
 
       this.logger.log(
         `Procesando agendamiento CL: appointmentId=${
-          appointment.properties().appointmentId
+          payload.appointmentId
         }`,
       );
 
       await this.rdsRepo.save(appointment);
 
       const event: AppointmentConfirmedEvent = {
-        appointmentId: appointment.properties().appointmentId,
+        appointmentId: payload.appointmentId,
         insuredId: appointment.properties().insuredId,
         scheduleId: appointment.properties().schedule.properties().scheduleId,
         countryISO: appointment.properties().countryISO,

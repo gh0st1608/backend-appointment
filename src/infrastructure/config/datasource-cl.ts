@@ -1,4 +1,3 @@
-//import 'reflect-metadata';
 import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import { AppointmentEntity } from '../entities/appointment.entity';

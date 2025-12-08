@@ -118,6 +118,15 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - sqs:ReceiveMessage
+          - sqs:DeleteMessage
+          - sqs:GetQueueAttributes
+        Resource:
+          Fn::GetAtt: [AppointmentConfirmationQueue, Arn]
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:GetItem
           - dynamodb:UpdateItem
         Resource:
           Fn::GetAtt: [AppointmentTable, Arn]
@@ -228,6 +237,23 @@ resources:
               Condition:
                 ArnEquals:
                   aws:SourceArn: !Ref AppointmentCreatedTopic
+
+    AppointmentConfirmationQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+          - !Ref AppointmentConfirmationQueue
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: events.amazonaws.com
+              Action: sqs:SendMessage
+              Resource: !GetAtt AppointmentConfirmationQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !GetAtt AppointmentToConfirmRule.Arn
 
 plugins:
   - serverless-offline
