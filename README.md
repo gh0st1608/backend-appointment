@@ -135,5 +135,5 @@ networks:
 2. Ejecutar primero `npm run install` y luego `npm run start` para visualizar el link de la documentación
 3. Ingresar al link `http://127.0.0.1:8084`
 
-## Pruebas Unitarias
+## Pruebas e2e
 1. Ubicarse en la raiz y ejecutar `npm run test`
