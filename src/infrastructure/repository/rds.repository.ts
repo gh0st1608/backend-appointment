@@ -45,4 +45,24 @@ export class RdsRepository implements IRDSAppointmentRepository {
 
     await repo.save(entity);
   }
+
+  async existsByInsured(
+    insuredId: string,
+    scheduleId: number,
+    countryISO: string,
+  ): Promise<boolean> {
+    const ds = this.getDataSource(countryISO);
+
+    if (!ds.isInitialized) {
+      await ds.initialize();
+    }
+
+    const repo = ds.getRepository(AppointmentEntity);
+
+    const count = await repo.count({
+      where: { insuredId, scheduleId },
+    });
+
+    return count > 0;
+  }
 }

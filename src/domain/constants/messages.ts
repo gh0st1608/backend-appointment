@@ -4,7 +4,8 @@ export enum ServerErrorMessages {
 
 export enum DomainErrorMessages {
   APPOINTMENT_NOT_FOUND = 'Cita no encontrada',
-  APPOINTMENT_PAYLOAD_INVALID= 'Payload Invàlido'
+  APPOINTMENT_PAYLOAD_INVALID= 'Payload Invàlido',
+  APPOINTMENT_ALREADY_EXISTS = 'Cita ya agendada por el cliente en el mismo espacio'
 }
 
 export enum DomainSuccessMessages {

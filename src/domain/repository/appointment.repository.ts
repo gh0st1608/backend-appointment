@@ -1,4 +1,4 @@
-import { Appointment } from '../entities/appointment.entity';
+import { Appointment, CountryISO } from '../entities/appointment.entity';
 
 export interface IDynamoAppointmentRepository {
   save(appointment: Appointment): Promise<string>;
@@ -7,6 +7,7 @@ export interface IDynamoAppointmentRepository {
 
 export interface IRDSAppointmentRepository {
   save(appointment: Appointment): Promise<void>;
+  existsByInsured(insuredId: string, scheduleId: number, countryISO: CountryISO): Promise<boolean>;
 }
 
 export const DynamoAppointmentSymbol = Symbol('IDynamoAppointmentRepository');
