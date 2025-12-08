@@ -16,6 +16,7 @@ import {
 } from '../../domain/repository/event.repository';
 import { Schedule } from '../../domain/entities/schedule.entity';
 import { AppointmentPayloadInvalidException } from '../exceptions/appointment-payload-invalid.exception';
+import { AppointmentAlreadyExistsException } from '../exceptions/appointment-already-exists.exception';
 
 @Injectable()
 export class ScheduleAppointmentCLUseCase {
@@ -32,7 +33,17 @@ export class ScheduleAppointmentCLUseCase {
   async execute(payload: AppointmentPayload): Promise<void> {
     try {
       if (!payload) {
-        throw new AppointmentPayloadInvalidException;
+        throw new AppointmentPayloadInvalidException();
+      }
+
+      const alreadyExists = await this.rdsRepo.existsByInsured(
+        payload.insuredId,
+        payload.scheduleId,
+        payload.countryISO,
+      );
+
+      if (alreadyExists) {
+        throw new AppointmentAlreadyExistsException();
       }
 
       const schedule = Schedule.create({
@@ -60,7 +71,7 @@ export class ScheduleAppointmentCLUseCase {
       await this.rdsRepo.save(appointment);
 
       const event: AppointmentConfirmedEvent = {
-        appointmentId:  appointment.properties().appointmentId,
+        appointmentId: appointment.properties().appointmentId,
         insuredId: appointment.properties().insuredId,
         scheduleId: appointment.properties().schedule.properties().scheduleId,
         countryISO: appointment.properties().countryISO,
