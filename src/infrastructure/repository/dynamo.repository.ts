@@ -34,7 +34,7 @@ export class DynamoRepository implements IDynamoAppointmentRepository {
         medicId: propsSchedule.medicId,
         date: propsSchedule.date,
         countryISO: propsAppointment.countryISO,
-        state: 'pending',
+        state: propsAppointment.state,
         createdAt: new Date().toISOString(),
       };
 
