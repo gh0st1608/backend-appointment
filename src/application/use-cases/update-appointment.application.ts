@@ -4,7 +4,6 @@ import {
   IDynamoAppointmentRepository,
 } from '../../domain/repository/appointment.repository';
 
-import { Appointment } from '../../domain/entities/appointment.entity';
 import { AppointmentConfirmedEvent } from '../../domain/interfaces/appointment-event.interface';
 import { HttpStatusResponse } from '../../domain/constants/http-code';
 import { DomainSuccessMessages } from '../../domain/constants/messages';

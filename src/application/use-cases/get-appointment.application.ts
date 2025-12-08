@@ -18,7 +18,6 @@ export class GetAppointmentByIdUseCase {
   async execute(id: string): Promise<AppointmentGetResponse> {
     try {
       const appointment = await this.dynamoRepo.findOne(id);
-
       if (!appointment) {
         throw new AppointmentNotFoundException();
       }
@@ -29,7 +28,7 @@ export class GetAppointmentByIdUseCase {
         message: DomainSuccessMessages.GET_APPOINTMENT_SUCESS,
       };
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 }

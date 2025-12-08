@@ -17,7 +17,8 @@
         "strictNullChecks": false,
         "forceConsistentCasingInFileNames": true,
         "types": [
-            "node"
+            "node",
+            "jest"
         ]
     }
 }
