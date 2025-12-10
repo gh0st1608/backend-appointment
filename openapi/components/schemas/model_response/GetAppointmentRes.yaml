@@ -1,0 +1,38 @@
+type: object
+description: Devuelve un mensaje de una cita creada
+properties:
+  Data:
+    type: object
+    properties:
+      appointment:
+        type: object    
+        properties:
+          appointmentId:
+            $ref: ../attributes/uuid.yaml
+          insuredId:
+            $ref: ../attributes/appointment/insured-id.yaml
+          createdAt:
+            $ref: ../attributes/date.yaml
+          state:
+            $ref: ../attributes/appointment/state.yaml
+          schedule:
+            type: object  
+            properties:
+              scheduleId:
+                $ref: ../attributes/schedule/schedule-id.yaml
+              centerId:
+                $ref: ../attributes/schedule/center-id.yaml
+              specialtyId:
+                $ref: ../attributes/schedule/specialty-id.yaml
+              medicId:
+                $ref: ../attributes/schedule/medic-id.yaml
+              date:
+                $ref: ../attributes/date.yaml
+      statusCode:
+        $ref: ../attributes/code.yaml
+      message:
+        $ref: ../attributes/message.yaml
+    required:
+      - appointment
+      - statusCode
+      - message 

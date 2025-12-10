@@ -1,0 +1,6 @@
+type: string
+description: Código de país permitido para el sistema (solo PE o CL)
+enum:
+  - PE
+  - CL
+example: "PE"

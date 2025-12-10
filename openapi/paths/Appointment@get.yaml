@@ -1,0 +1,41 @@
+parameters:
+  - $ref: ../components/parameters/Channel.yaml
+  - $ref: ../components/parameters/ApiKey.yaml
+  - name: id
+    in: path
+    required: true
+    description: UUID de la cita
+    schema:
+      type: string
+      format: uuid
+
+get:
+  summary: Get Appointment By ID
+  operationId: getAppointmentById
+  description: >
+    📦 Procesos: Obtención de cita por identificador único
+  
+  
+    🔧 Funcionalidad: Recuperar los datos completos de una cita existente
+  
+      
+    🚀 Objetivo: Obtener información de una cita por su *appointmentId*
+  
+  
+    📌 Comentarios: 
+
+  tags:
+    - Appointments
+
+  responses:
+    '200':
+      $ref: ../components/responses/GetAppointmentResponse.yaml
+    '400':
+      $ref: ../components/statusCodes/BadRequestResponse.yaml
+    '404':
+      $ref: ../components/statusCodes/NotFoundResponse.yaml
+    '500':
+      $ref: ../components/statusCodes/InternalServerErrorResponse.yaml
+  
+  security:
+    - api_key: []

@@ -1,0 +1,3 @@
+type: string
+description: Identificador del asegurado al que pertenece la cita.
+example: "10001"

@@ -1,0 +1,7 @@
+type: string
+enum:
+  - pending
+  - confirmed
+  - failed
+description: Estado actual de la cita.
+example: "confirmed"

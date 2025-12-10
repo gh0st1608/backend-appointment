@@ -18,7 +18,7 @@ info:
     x-id-product: backend-dev-appointment
     x-id-catalog: api-appointment
 servers:
-  - url: 'https://ic0zx2pnw2.execute-api.us-east-1.amazonaws.com/'
+  - url: 'https://nv1t7onj9g.execute-api.us-east-1.amazonaws.com/'
     description: Servidor de ambiente Desarrollo
 
 tags:
@@ -29,6 +29,8 @@ tags:
 paths: 
   '/appointments':
     $ref: 'paths/Appointment@create.yaml'
+  '/appointments/{id}':
+    $ref: 'paths/Appointment@get.yaml'  
 
 components:
   securitySchemes:

@@ -1,5 +1,5 @@
 type: object
-description: Devuelve un mensaje de un producto creado
+description: Devuelve un mensaje de una cita creado
 properties:
   Data:
     type: object    

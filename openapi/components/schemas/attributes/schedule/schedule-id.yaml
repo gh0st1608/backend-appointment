@@ -1,0 +1,3 @@
+type: integer
+description: Identificador del horario relacionado a la cita.
+example: 12

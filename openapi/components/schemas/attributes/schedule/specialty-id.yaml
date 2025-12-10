@@ -1,0 +1,3 @@
+type: integer
+description: Identificador de la especialidad médica.
+example: 2

@@ -1,0 +1,26 @@
+description: Retorna detalle de una cita obtenida por ID
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: ../schemas/model_response/StandardResponse.yaml
+        - $ref: ../schemas/model_response/GetAppointmentRes.yaml
+    examples:
+      Caso-Prueba-01:
+        summary: Obtener cita por ID
+        value:
+          Data:
+            appointment:
+              state: "confirmed"
+              appointmentId: "4bb071d1-f86d-404d-a177-061949dd0d27"
+              insuredId: "10002"
+              schedule:
+                scheduleId: 10
+                centerId: 5
+                specialtyId: 2
+                medicId: 7
+                date: "2025-12-04T14:30:00Z"
+              countryISO: "PE"
+              createdAt: "2025-12-08T21:26:27.295Z"
+            statusCode: 200
+            message: "Cita obtenido con éxito"

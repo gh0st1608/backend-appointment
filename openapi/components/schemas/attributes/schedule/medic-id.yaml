@@ -1,0 +1,3 @@
+type: integer
+description: Identificador del médico asociado al horario.
+example: 7

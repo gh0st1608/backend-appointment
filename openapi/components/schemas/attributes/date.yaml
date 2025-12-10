@@ -1,0 +1,4 @@
+type: string
+format: date-time
+description: Fecha y hora de creación del registro en formato ISO 8601 (UTC). Incluye milisegundos y la designación "Z" indicando hora universal coordinada.
+example: "2025-12-08T21:26:27.295Z"
